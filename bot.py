@@ -1,18 +1,23 @@
 import discord
 from discord.ext import commands
+from discord.ui import Button
 import time
 import json
-with open("setting.json", 'r', encoding='utf-8') as setting_value:#setting.json含有機器人的金鑰，不公開
+with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.json含有機器人的金鑰，不公開
     sv_data = json.load(setting_value)
-with open("game_data.json",'r',encoding="utf-8") as game_data:
-    gm_data=json.load(game_data)
+with open("game_data.json", 'r', encoding="utf-8") as game_data:
+    gm_data = json.load(game_data)
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='-', intents=intents)  # 前贅字符
 
+
 @bot.event
 async def on_ready():
     print("Bot in ready")
+    game = discord.Game('努力學習py中')
+    # discord.Status.<狀態>，可以是online,offline,idle,dnd,invisible
+    await bot.change_presence(status=discord.Status.idle, activity=game)
 
 
 @bot.command()
@@ -23,6 +28,11 @@ async def hello(ctx):
 @bot.command()
 async def cls(ctx, num: int):
     await ctx.channel.purge(limit=num+1)
+
+
+@bot.command()
+async def count(ctx):
+    await ctx.send("54")
 
 
 @bot.command()
@@ -46,7 +56,9 @@ async def nowact(ctx):
     await ctx.channel.purge(limit=1)
     await ctx.send(embed=embed)
 
-#未完
+# 未完
+
+
 @bot.command()
 async def hardlevels(ctx):
     output_arr = []
@@ -54,25 +66,23 @@ async def hardlevels(ctx):
         output_arr.append(gm_data["hard_levels"][i]["name"] +
                           gm_data["hard_levels"][i]["type"]+gm_data["hard_levels"][i]["work"])
     await ctx.send(output_arr)
-#未完
-#查找硬幣內容
+# 未完
+# 查找硬幣內容
+
+
 @bot.hybrid_group(fallback="get")
 async def yokaicoin(ctx):
     await ctx.send(gm_data["coin_help"])
+
 
 @yokaicoin.command()
 async def jstar5(ctx):
     await ctx.send(gm_data["jstar5"])
 
+
 @yokaicoin.command()
 async def jstar4(ctx):
     await ctx.send(gm_data["jstar4"])
 
-# @bot.command()
-# async def invisible(ctx):#invisible
-#     # await ctx.send(ctx.guild.members)
-#     for member in ctx.guild.members:
-#         if str(member.status)=='invisible':
-#             await ctx.send(member.name)
 
 bot.run(sv_data['token'])
