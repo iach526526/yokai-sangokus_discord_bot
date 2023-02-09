@@ -1,6 +1,6 @@
 # my_discord_bot 
 ## 簡介
-**這是專為遊戲妖怪三國志竊國戰爭設計的Discord機器人，你可以對它下指令查詢攻略，如果你是伺服器的管理員可以點[此連結](https://discord.com/api/oauth2/authorize?client_id=1066170654916882483&permissions=8&scope=bot)把機器人邀進伺服器。由於目前此程式還在測試中，不會24小時執行，請見諒**
+**這是專為遊戲妖怪三國志竊國戰爭設計的Discord機器人，你可以對它下指令查詢攻略，如果你是伺服器的管理員可以點[此連結](https://discord.com/api/oauth2/authorize?client_id=1066170654916882483&permissions=8&scope=bot)把機器人邀進伺服器。**
 
 ## 指令
 任何指令前面都要加上-號，你可以使用-help查看所有指令

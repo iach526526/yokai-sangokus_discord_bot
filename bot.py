@@ -7,13 +7,13 @@ with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.js
 
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='>>>', intents=intents)  # 前贅字符
+bot = commands.Bot(command_prefix='>>', intents=intents)  # 前贅字符
 
 
 @bot.event
 async def on_ready():
     print("Bot in ready")
-    game = discord.Game('努力學習py中')
+    game = discord.Game('離恨樓裡生離恨💖測試')
     # discord.Status.<狀態>，可以是online,offline,idle,dnd,invisible
     await bot.change_presence(status=discord.Status.idle, activity=game)
 
