@@ -1,7 +1,10 @@
 import discord
 from discord.ext import commands
 from discord.ui import Button, View
-import os,time,json,asyncio
+import os
+import time
+import json
+import asyncio
 with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.json含有機器人的金鑰，不公開
     sv_data = json.load(setting_value)
 
@@ -20,13 +23,27 @@ async def on_ready():
 
 @bot.command()
 async def btm(ctx):
-    buttom=Button(label='click',style=discord.ButtonStyle.green,emoji="✌")
-    view=View()
-    view.add_item(buttom)
-    await ctx.send("Hi",view=view)
+    # await ctx.send("loading...")
+    # await ctx.guild.id(ctx.guild.id)
+    if ctx.guild.id == int("1000338680243834880"):
+        buttom = Button(
+            label='click', style=discord.ButtonStyle.green, emoji="✌")
+        view = View()
+        view.add_item(buttom)
+        await ctx.send("Hi", view=view)
+    else:
+        await ctx.send("guild is incorrect")
+    await ctx.send("done")
 # # 未完
 
 
+@bot.command()
+async def sh_id(ctx):
+    await ctx.send("loading")
+    
+    # print("now_guild")
+    await ctx.send(ctx.guild.id)
+    await ctx.send("done")
 # @bot.command()
 # async def hardlevels(ctx):
 #     output_arr = []
@@ -36,11 +53,14 @@ async def btm(ctx):
 #     await ctx.send(output_arr)
 # # 未完
 
+
 async def cog():
     for filename in os.listdir("./Cmds/"):
         if filename.endswith('.py'):
             print(f"i read:{filename}^_^")
             await bot.load_extension(f"Cmds.{filename[:-3]}")
+
+
 async def test():
     async with bot:
         await cog()
