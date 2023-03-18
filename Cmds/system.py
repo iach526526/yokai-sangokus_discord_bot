@@ -2,6 +2,9 @@ import discord,json
 from discord.ext import commands
 from discord.ui import Button
 from core.classes import cog_extension
+
+from discord.ext import tasks, commands
+
 with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.json含有機器人的金鑰，不公開
     sv_data = json.load(setting_value)
 class system(cog_extension):
@@ -17,7 +20,21 @@ class system(cog_extension):
             await channel.send(F"{member}"+sv_data["left_text"])
         else:
             print("遙遠的彼方有人退出")#這是悄悄話，只有你知道歐
-    
+    @commands.Cog.listener()  
+    async def on_message(self, message):
+        if message.content.startswith(':omo:'):
+            channel = message.channel
+            await channel.send('Send me that 👍 reaction, mate')
+
+            def check(reaction, user):
+                return user == message.author and str(reaction.emoji) == '👍'
+
+            try:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+            except self.asyncio.TimeoutError:
+                await channel.send('👎')
+            else:
+                await channel.send('👍')
     @commands.command()
     async def id(self,ctx):
         await ctx.send(f"hello<@{ctx.author.id}>")
