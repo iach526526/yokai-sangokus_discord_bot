@@ -2,21 +2,36 @@
 import urllib.request as req
 import bs4
 ################連線到腳色一覽表格尋找特定角色的介紹網址#########################################
-url = "https://game8.jp/youkai-sangokushi/421769"
-request = req.Request(
+
+def link_start(url:str):
+  request = req.Request(
   url,
   headers={
     "User-Agent":
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
   })
+  with req.urlopen(request) as response:
+    data = response.read().decode("utf-8")
+  root = bs4.BeautifulSoup(data, "html.parser")
+  return root#回傳經BS整理後的網頁
+
+# url = "https://game8.jp/youkai-sangokushi/421769"
+# request = req.Request(
+#   url,
+#   headers={
+#     "User-Agent":
+#     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+#   })
 
 
 
-with req.urlopen(request) as response:
-  data = response.read().decode("utf-8")
-root = bs4.BeautifulSoup(data, "html.parser")
+# with req.urlopen(request) as response:
+#   data = response.read().decode("utf-8")
+# root = bs4.BeautifulSoup(data, "html.parser")
+
+root=link_start("https://game8.jp/youkai-sangokushi/421769")#連到天星的網頁
 # get_table = root.select(".tablesorter td .a-link")  #傳回角色表格裡包含角色名字的a標籤
-i_want_to_find = "冥土野花子蔡琰"
+i_want_to_find = "太子元帥・哪吒"#天星メラメライオン張飛
 name_links = root.select(f".tablesorter td .a-link:contains('{i_want_to_find}')")
 #尋找表格中的值=i_want_to_find
 if name_links:
@@ -28,16 +43,7 @@ if name_links:
 else:
     print(f"找不到名為 {i_want_to_find} 的角色")
 ###################連線到下一頁尋找評分、技能等資料#########################################
-request = req.Request(
-  tagart_link,
-  headers={
-    "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
-  })
-with req.urlopen(request) as response:
-  data = response.read().decode("utf-8")
-root = bs4.BeautifulSoup(data, "html.parser")
-
+root=link_start(tagart_link)
 get_detail = root.select(".archive-style-wrapper .a-table tr td") 
 print(root.find(string=i_want_to_find))
 find_img=root.find("img",alt=i_want_to_find)
@@ -48,14 +54,14 @@ number_tag = root.find(string=re.compile('じてん'))#辭典號碼
 # 取得"じてん"標籤所在的父元素
 parent_tag = number_tag.find_parent("tr")
 # 取得"じてん"標籤所在的父元素中第一個span元素的內容
-number_info = parent_tag.select_one("span:nth-of-type(1)").text.strip()#種族資訊
+number_info = parent_tag.select_one(":nth-of-type(1)").text.strip()#辭典號碼
 print(number_info)
 
 race_tag = root.find(string="【種族】")
 # 取得"【種族】"標籤所在的父元素
 parent_tag = race_tag.find_parent("tr")
 # 取得"【種族】"標籤所在的父元素中尋找第一個div元素的內容
-race_info = parent_tag.select_one("div:nth-of-type(1)").text.strip()#種族資訊
+race_info = parent_tag.select_one(":nth-of-type(1)").text.strip()#種族資訊
 print(race_info)
 
 stand_tag = root.find(string="【立ち位置】")

@@ -25,20 +25,22 @@ class cather(cog_extension):
     embed.add_field(name="国盗り評価", value=kokutou_eval,inline=True)
     embed.add_field(name="イベント評価", value=event_eval, inline=True)
     await ctx.send(embed=embed)
-
-def Find_dedicated_page(i_want_to_find:str):#尋找角色的介紹網址，傳入欲尋找的角色，傳回該角色的專屬網址
-  ################連線到腳色一覽表格尋找特定角色的介紹網址#########################################
-  url = "https://game8.jp/youkai-sangokushi/421769"
+#回傳經BS套件整理後的網頁
+def link_start(url:str):
   request = req.Request(
-    url,
-    headers={
-      "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
-    })
+  url,
+  headers={
+    "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+  })
   with req.urlopen(request) as response:
     data = response.read().decode("utf-8")
   root = bs4.BeautifulSoup(data, "html.parser")
-  #
+  return root
+#回傳經BS套件整理後的網頁
+def Find_dedicated_page(i_want_to_find:str):#尋找角色的介紹網址，傳入欲尋找的角色，傳回該角色的專屬網址
+  ################連線到腳色一覽表格尋找特定角色的介紹網址#########################################
+  root = link_start("https://game8.jp/youkai-sangokushi/421769")
   name_links = root.select(f".tablesorter td .a-link:contains('{i_want_to_find}')")
   if name_links:
       name_link = name_links[0]
@@ -50,15 +52,7 @@ def Find_dedicated_page(i_want_to_find:str):#尋找角色的介紹網址，傳�
       print(f"找不到名為 {i_want_to_find} 的角色")
 def search_detail(tagart_link:str,i_want_to_find:str):#跳轉到角色詳細資料的那頁
   ##################連線到下一頁尋找評分、技能等資料#########################################
-  request = req.Request(
-    tagart_link,
-    headers={
-      "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
-    })
-  with req.urlopen(request) as response:
-    data = response.read().decode("utf-8")
-  root = bs4.BeautifulSoup(data, "html.parser")
+  root = link_start(tagart_link)
   find_img=root.find("img",alt=i_want_to_find)
 
 
