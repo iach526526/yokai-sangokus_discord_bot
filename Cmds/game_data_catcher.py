@@ -48,8 +48,17 @@ def Find_dedicated_page(i_want_to_find:str):#尋找角色的介紹網址，傳�
       # print(name_link['href'])
       tagart_link = name_link['href']
       return tagart_link,name_link.text
-  else:
-      print(f"找不到名為 {i_want_to_find} 的角色")
+  else:#i_want_to_find的內容不存在於421769(天星的網頁)，往將星找下去
+      root=link_start("https://game8.jp/youkai-sangokushi/262930")#將星的網頁
+      name_links = root.select(f".tablesorter td .a-link:contains('{i_want_to_find}')")
+      if name_links:
+        name_link = name_links[0]
+        # print(name_link.text)
+        # print(name_link['href'])
+        tagart_link = name_link['href']
+        return tagart_link,name_link.text
+      else:
+        print(f"找不到名為 {i_want_to_find} 的角色")
 def search_detail(tagart_link:str,i_want_to_find:str):#跳轉到角色詳細資料的那頁
   ##################連線到下一頁尋找評分、技能等資料#########################################
   root = link_start(tagart_link)
@@ -91,10 +100,14 @@ def search_detail(tagart_link:str,i_want_to_find:str):#跳轉到角色詳細資�
   sogou_eval = point_table.select_one("tr:nth-of-type(1) span").text.strip()
 
   # 国盗り評価
-  kokutou_eval = point_table.select_one("tr:nth-of-type(2) span").text.strip()
-
+  kokutou_eval = point_table.select_one("tr:nth-of-type(2) span")
+  if (kokutou_eval!=None):
+     kokutou_eval=kokutou_eval.text.strip()
+  print(kokutou_eval)
   # イベント評価
-  event_eval = point_table.select_one("tr:nth-of-type(3) span").text.strip()
+  event_eval = point_table.select_one("tr:nth-of-type(3) span")
+  if (event_eval !=None):
+    event_eval=event_eval.text.strip()
   return find_img['data-src'],number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval
 
 
