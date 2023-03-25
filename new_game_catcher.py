@@ -91,7 +91,7 @@ def search_detail(tagart_link:str,i_want_to_find:str):#跳轉到角色詳細資�
   return find_img['data-src'],number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval
 
 
-url,name=Find_dedicated_page("聖夜の王貴人")
+url,name=Find_dedicated_page("聖夜の王貴人")#Find_dedicated_page函式放入要尋找的目標，回傳該角色專屬頁和名字
 print(url+"\n"+name)
 print("detail:")
 print(search_detail(url,name))
