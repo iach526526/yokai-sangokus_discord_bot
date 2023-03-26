@@ -1,6 +1,7 @@
 #這是不含Discord訊息輸出的終端機測試版
 import urllib.request as req
 import bs4
+import re
 ################連線到腳色一覽表格尋找特定角色的介紹網址#########################################
 
 def link_start(url:str):
@@ -31,7 +32,7 @@ def link_start(url:str):
 
 root=link_start("https://game8.jp/youkai-sangokushi/421769")#連到天星的網頁
 # get_table = root.select(".tablesorter td .a-link")  #傳回角色表格裡包含角色名字的a標籤
-i_want_to_find = "太子元帥・哪吒"#天星メラメライオン張飛
+i_want_to_find = "太子元帥・哪吒"#天星メラメライオン張飛 冥土野花子蔡琰
 name_links = root.select(f".tablesorter td .a-link:contains('{i_want_to_find}')")
 #尋找表格中的值=i_want_to_find
 if name_links:
@@ -41,6 +42,7 @@ if name_links:
     tagart_link = name_link['href']
     print("\n")
 else:
+    root=link_start("https://game8.jp/youkai-sangokushi/262930")#將星的網頁
     print(f"找不到名為 {i_want_to_find} 的角色")
 ###################連線到下一頁尋找評分、技能等資料#########################################
 root=link_start(tagart_link)
@@ -48,7 +50,7 @@ get_detail = root.select(".archive-style-wrapper .a-table tr td")
 print(root.find(string=i_want_to_find))
 find_img=root.find("img",alt=i_want_to_find)
 print(find_img['data-src'])
-import re
+
 
 number_tag = root.find(string=re.compile('じてん'))#辭典號碼
 # 取得"じてん"標籤所在的父元素
