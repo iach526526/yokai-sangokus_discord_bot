@@ -1,6 +1,6 @@
-import discord
-from discord.ext import commands
-from discord.ui import Button, View
+import nextcord
+from nextcord.ext import commands
+from nextcord.ui import Button, View
 import os
 import time
 import json
@@ -9,16 +9,16 @@ with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.js
     sv_data = json.load(setting_value)
 
 
-intents = discord.Intents.all()
+intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix='>>', intents=intents)  # 前贅字符
 
 
 @bot.event
 async def on_ready():
     print("Bot in ready")
-    game = discord.Game('離恨樓裡生離恨💖測試')
-    # discord.Status.<狀態>，可以是online,offline,idle,dnd,invisible
-    await bot.change_presence(status=discord.Status.idle, activity=game)
+    game = nextcord.Game('離恨樓裡生離恨💖測試')
+    # nextcord.Status.<狀態>，可以是online,offline,idle,dnd,invisible
+    await bot.change_presence(status=nextcord.Status.idle, activity=game)
 
 
 @bot.command()
@@ -27,7 +27,7 @@ async def btm(ctx):
     # await ctx.guild.id(ctx.guild.id)
     if ctx.guild.id == int("1000338680243834880"):
         buttom = Button(
-            label='click', style=discord.ButtonStyle.green, emoji="✌")
+            label='click', style=nextcord.ButtonStyle.green, emoji="✌")
         view = View()
         view.add_item(buttom)
         await ctx.send("Hi", view=view)
@@ -40,7 +40,7 @@ async def btm(ctx):
 @bot.command()
 async def sh_id(ctx):
     await ctx.send("loading")
-    
+
     # print("now_guild")
     await ctx.send(ctx.guild.id)
     await ctx.send("done")
@@ -55,15 +55,17 @@ async def sh_id(ctx):
 
 
 async def cog():
+    tasks = []
     for filename in os.listdir("./Cmds/"):
         if filename.endswith('.py'):
             print(f"i read:{filename}^_^")
-            await bot.load_extension(f"Cmds.{filename[:-3]}")
+            task = bot.load_extension(f"Cmds.{filename[:-3]}")
+            tasks.append(task)
+    await asyncio.gather(*tasks)
 
 
 async def test():
-    async with bot:
-        await cog()
-        await bot.start(sv_data['token'])
+    await cog()
+    await bot.start(sv_data['token'])
 if __name__ == "__main__":
     asyncio.run(test())
