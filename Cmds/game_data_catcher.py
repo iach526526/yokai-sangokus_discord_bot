@@ -15,16 +15,29 @@ class cather(cog_extension):
     async def getinfo(self,interaction:discord.Interaction, i_want_to_find:str,invisible:bool=True):
         tagart_link,yokai_name=Find_dedicated_page(i_want_to_find)
         result=exist_error(tagart_link,yokai_name)
+        print(f"result:{result}")
         if not (result):
             #正常輸出
             thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval=search_detail(tagart_link,yokai_name)#接收回傳的縮圖、種族、站位資訊
-            embed=make_embed(yokai_name,tagart_link,thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval)#把蒐集到的資訊到的資訊做成DC嵌入訊息
-            await interaction.response.send_message(embed=embed,ephemeral=invisible)
+            # print(thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval)#測試用程式
+            # eme=make_embed(yokai_name,tagart_link,thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval)#把蒐集到的資訊到的資訊做成DC嵌入訊息
+            embe=discord.Embed(title=yokai_name, url=tagart_link, color=0xfbff14)
+            embe.set_author(name="Each", url="https://github.com/iach526526", icon_url="https://i.imgur.com/fape9SN.png")
+            embe.set_thumbnail(url=thumbnail)
+            embe.add_field(name="じてん(辭典號碼)", value=number_info, inline=True)
+            embe.add_field(name="【種族】", value=race_info, inline=True)
+            embe.add_field(name="【立ち位置】", value=f"\t\t\t{stand_info}", inline=True)
+            embe.add_field(name="総合評価", value=sogou_eval, inline=True)
+            embe.add_field(name="国盗り評価", value=kokutou_eval,inline=True)
+            embe.add_field(name="イベント評価", value=event_eval, inline=True)
+            print(thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval)#測試用程式
+            print(embe)#測試用程式
+            await interaction.response.send_message(embed=embe,ephemeral=invisible)
         else:
         #回傳erro訊息
             await interaction.response.send_message(embed=result,ephemeral=invisible)
 def exist_error(link,yokai_name):#確認Find_dedicated_page函式有回傳東西，不為None
-   if not link or not yokai_name:
+   if ((not link) or (not yokai_name)):
       embed = discord.Embed(title="找不到搜尋對象")
       embed.add_field(name="欸若(error)啦", value="請檢查角色名稱再試一次", inline=True)
       return embed
@@ -124,8 +137,8 @@ def new_page(i_want_to_find, root):
     # 取得該 `td` 元素中的文字內容
     if num:  # 找出辭典編號
         number_info = num.parent.find(string=re.compile(r'\d+'))  # 找td
-        if number_info:
-            print(number_info.text)
+        # if number_info:
+        #     print(number_info.text)
     script_table = root.find('th', string=lambda text: text and i_want_to_find in text).find_parent(
         'table')  # 定位到寫有角色詳細的表格
 
@@ -142,7 +155,7 @@ def new_page(i_want_to_find, root):
             race_info = text_in_tag
         if turn == 3:
             stand_info = text_in_tag
-        print(str(turn)+text_in_tag)
+        # print(str(turn)+text_in_tag)
         turn += 1
     # 進第二張表格
     point_table = root.find('th', string=lambda text: text and "総合評価" in text).find_parent(
@@ -175,16 +188,18 @@ def search_detail(tagart_link:str,i_want_to_find:str):#跳轉到角色詳細資�
         number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval=old(root)
     return find_img,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval
 
-def make_embed(yokai_name,tagart_link,thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval):
-    embed=discord.Embed(title=yokai_name, url=tagart_link, color=0xfbff14)
-    embed.set_author(name="Each", url="https://github.com/iach526526", icon_url="https://i.imgur.com/fape9SN.png")
-    embed.set_thumbnail(url=thumbnail)
-    embed.add_field(name="じてん(辭典號碼)", value=number_info, inline=True)
-    embed.add_field(name="【種族】", value=race_info, inline=True)
-    embed.add_field(name="【立ち位置】", value=f"\t\t\t{stand_info}", inline=True)
-    embed.add_field(name="総合評価", value=sogou_eval, inline=True)
-    embed.add_field(name="国盗り評価", value=kokutou_eval,inline=True)
-    embed.add_field(name="イベント評価", value=event_eval, inline=True)
-    return embed
+# def make_embed(yokai_name,tagart_link,thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval):
+#     embed=discord.Embed(title=yokai_name, url=tagart_link, color=0xfbff14)
+#     embed.set_author(name="Each", url="https://github.com/iach526526", icon_url="https://i.imgur.com/fape9SN.png")
+#     embed.set_thumbnail(url=thumbnail)
+#     embed.add_field(name="じてん(辭典號碼)", value=number_info, inline=True)
+#     embed.add_field(name="【種族】", value=race_info, inline=True)
+#     embed.add_field(name="【立ち位置】", value=f"\t\t\t{stand_info}", inline=True)
+#     embed.add_field(name="総合評価", value=sogou_eval, inline=True)
+#     embed.add_field(name="国盗り評価", value=kokutou_eval,inline=True)
+#     embed.add_field(name="イベント評価", value=event_eval, inline=True)
+#     # print(thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval)#測試用程式
+#     print(embed)
+#     return embed
 async def setup(bot):
     await bot.add_cog(cather(bot))
