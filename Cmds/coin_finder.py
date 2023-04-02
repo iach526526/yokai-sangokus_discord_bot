@@ -24,7 +24,9 @@ class coin_finder(cog_extension):
     @yokaicoin.command()
     async def jstar6(self, ctx):
         await ctx.send(gm_data["jstar6"])
-
+    @yokaicoin.command()
+    async def s2(self, ctx):
+        await ctx.send(gm_data["S2"])
 
 async def setup(bot):
     await bot.add_cog(coin_finder(bot))
