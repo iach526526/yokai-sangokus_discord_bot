@@ -1,13 +1,60 @@
+<<<<<<< Updated upstream
 import nextcord
 import json
 from nextcord.ext import commands
 from nextcord.ui import Button
+=======
+import discord,json
+from discord.ext import commands
+from discord import app_commands
+from discord.ui import Button
+>>>>>>> Stashed changes
 from core.classes import cog_extension
 import urllib.request as req
 import bs4
 import re  # 有用到正則表達式
 with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.json含有機器人的金鑰，不公開
     sv_data = json.load(setting_value)
+<<<<<<< Updated upstream
+=======
+class cather(cog_extension):
+  @app_commands.command(name='尋找角色頁面' ,description="單純尋找角色頁網址，不查詳細資訊")
+  async def find(self,interaction:discord.Interaction, i_want_to_find:str):
+    get_url,got_name=Find_dedicated_page(i_want_to_find)
+    await interaction.response.send_message(f"i got '{got_name}' from: {get_url}")
+  @app_commands.command(name='getinfo' ,description="尋找角色資訊(包含評分、種族等詳細資訊)")
+  async def getinfo(self,interaction:discord.Interaction, i_want_to_find:str,invisible:bool=True):
+    tagart_link,yokai_name=Find_dedicated_page(i_want_to_find)
+    result=exist_error(tagart_link,yokai_name)
+    if not (result):
+      #正常輸出
+      thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval=search_detail(tagart_link,yokai_name)#接收回傳的縮圖、種族、站位資訊
+      embed=make_embed(yokai_name,tagart_link,thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval)#把蒐集到的資訊到的資訊做成DC嵌入訊息
+      await interaction.response.send_message(embed=embed,ephemeral=invisible)
+    else:
+       #回傳erro訊息
+       await interaction.response.send_message(embed=result,ephemeral=invisible)
+
+def exist_error(link,yokai_name):#確認Find_dedicated_page函式有回傳東西，不為None
+   if not link or not yokai_name:
+      embed = discord.Embed(title="找不到搜尋對象")
+      embed.add_field(name="欸若(error)啦", value="請檢查角色名稱再試一次", inline=True)
+      return embed
+   else:
+      return None
+#函式區
+def link_start(url:str):
+  request = req.Request(
+  url,
+  headers={
+    "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
+  })
+  with req.urlopen(request) as response:
+    data = response.read().decode("utf-8")
+  root = bs4.BeautifulSoup(data, "html.parser")
+  return root
+>>>>>>> Stashed changes
 
 
 class cather(cog_extension):
@@ -61,6 +108,7 @@ def Find_dedicated_page(i_want_to_find: str):  # 尋找角色的介紹網址，�
         # print(name_link.text)
         # print(name_link['href'])
         tagart_link = name_link['href']
+<<<<<<< Updated upstream
         return tagart_link, name_link.text
     else:  # i_want_to_find的內容不存在於421769(天星的網頁)，往將星找下去
         root = link_start("https://game8.jp/youkai-sangokushi/262930")  # 將星的網頁
@@ -77,6 +125,13 @@ def Find_dedicated_page(i_want_to_find: str):  # 尋找角色的介紹網址，�
 # --------------------舊版網頁--------------------------------------------------
 
 
+=======
+        return tagart_link,name_link.text
+      else:
+        return None, None
+        # print(f"找不到名為 {i_want_to_find} 的角色")
+#--------------------舊版網頁--------------------------------------------------
+>>>>>>> Stashed changes
 def old(root):
     number_tag = root.find(string=re.compile('じてん'))  # 辭典號碼
     # 取得"じてん"標籤所在的父元素
@@ -173,8 +228,46 @@ def search_detail(tagart_link: str, i_want_to_find: str):  # 跳轉到角色詳�
         number_info, race_info, stand_info, sogou_eval, kokutou_eval, event_eval = old(
             root)
 
+<<<<<<< Updated upstream
     return find_img, number_info, race_info, stand_info, sogou_eval, kokutou_eval, event_eval
 
 
+=======
+  return number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval
+
+
+
+def search_detail(tagart_link:str,i_want_to_find:str):#跳轉到角色詳細資料的那頁
+  ##################連線到下一頁尋找評分、技能等資料#########################################
+  root = link_start(tagart_link)
+  flag=False#判斷是否為新排版的旗標，True為是新版。舊版網頁大多用字串搜尋的可以找到資料，新版需要去看img的alt，寫法不同，分別呼叫函式new_page、old
+  images = root.find_all("img")#找角色縮圖順便判斷是新的排版方式還是舊的選擇不同爬取方式
+  for image in images:
+      alt_text = image.get("alt")
+      if alt_text=='妖怪':#另一種排版方式的依據，如果有找到那張alt=妖怪的圖片代表為新版
+        flag=True
+        continue
+      if alt_text ==i_want_to_find:
+          find_img=image['data-src']#找出角色縮略圖
+          break
+  if flag:
+     number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval=new_page(i_want_to_find,root)
+  else:
+     number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval=old(root)
+
+
+  return find_img,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval
+def make_embed(yokai_name,tagart_link,thumbnail,number_info,race_info,stand_info,sogou_eval,kokutou_eval,event_eval):
+  embed=discord.Embed(title=yokai_name, url=tagart_link, color=0xfbff14)
+  embed.set_author(name="Each", url="https://github.com/iach526526", icon_url="https://i.imgur.com/fape9SN.png")
+  embed.set_thumbnail(url=thumbnail)
+  embed.add_field(name="じてん(辭典號碼)", value=number_info, inline=True)
+  embed.add_field(name="【種族】", value=race_info, inline=True)
+  embed.add_field(name="【立ち位置】", value=f"\t\t\t{stand_info}", inline=True)
+  embed.add_field(name="総合評価", value=sogou_eval, inline=True)
+  embed.add_field(name="国盗り評価", value=kokutou_eval,inline=True)
+  embed.add_field(name="イベント評価", value=event_eval, inline=True)
+  return embed
+>>>>>>> Stashed changes
 async def setup(bot):
     await bot.add_cog(cather(bot))
