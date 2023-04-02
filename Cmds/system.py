@@ -1,20 +1,8 @@
-<<<<<<< Updated upstream
-import nextcord
-import json
-from nextcord.ext import commands
-from nextcord.ui import Button
-from core.classes import cog_extension
-
-from nextcord.ext import tasks, commands
-
-=======
 import discord,json
 from discord import app_commands
 from discord.ext import commands
 from discord.ui import Button
 from core.classes import cog_extension
-
->>>>>>> Stashed changes
 with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.json含有機器人的金鑰，不公開
     sv_data = json.load(setting_value)
 
@@ -50,8 +38,6 @@ class system(cog_extension):
             else:
                 await channel.send('👍')
 
-<<<<<<< Updated upstream
-=======
     @commands.command()
     async def sync(self,ctx)->None:
         fmt=await ctx.bot.tree.sync()
@@ -60,24 +46,14 @@ class system(cog_extension):
     @app_commands.command(name='prepare' ,description="prepare system")
     async def system(self,interaction:discord.Interaction,s:str):
         await interaction.response.send_message(f"prepare system:{s}",ephemeral=False)
->>>>>>> Stashed changes
     @commands.command()
     async def id(self, ctx):
         await ctx.send(f"hello<@{ctx.author.id}>")
-<<<<<<< Updated upstream
 
-    @commands.command()
-    async def cls(self, ctx, num: int):
-=======
     @commands.command()#刪訊息
     async def cls(self,ctx, num: int):
->>>>>>> Stashed changes
         await ctx.channel.purge(limit=num+1)
 
 
 async def setup(bot):
-<<<<<<< Updated upstream
-    await bot.add_cog(system(bot))
-=======
     await bot.add_cog(system(bot))#,guilds=[discord.Object(bot)]
->>>>>>> Stashed changes
