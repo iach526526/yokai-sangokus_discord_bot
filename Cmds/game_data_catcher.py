@@ -2,6 +2,7 @@ import discord,json,asyncio
 from discord.ext import commands
 from discord import app_commands
 from core.classes import cog_extension
+from core.translate import trans
 import urllib.request as req
 import bs4,re  # 有用到正則表達式
 with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.json含有機器人的金鑰，不公開
@@ -9,6 +10,7 @@ with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.js
 class cather(cog_extension):
     @app_commands.command(name='尋找角色頁面' ,description="單純尋找角色頁網址，不查詳細資訊")
     async def find(self,interaction:discord.Interaction, i_want_to_find:str,公開訊息:bool=True):
+        i_want_to_find=trans(i_want_to_find)#丟去trans函式(在core/translate.py)翻譯
         get_url,got_name=Find_dedicated_page(i_want_to_find)
         await interaction.response.send_message(f"i got '{got_name}' from: {get_url}",ephemeral=公開訊息)
     @app_commands.command(name='getinfo' ,description="尋找角色資訊(包含評分、種族等詳細資訊)")
@@ -16,8 +18,9 @@ class cather(cog_extension):
         orginial_emb=discord.Embed(title="loading",description="努力加載中")
         await interaction.response.send_message(embed=orginial_emb,ephemeral=invisible)
         msg=await interaction.original_response()
+        i_want_to_find=trans(i_want_to_find)#丟去trans函式(在core/translate.py)翻譯
         tagart_link,yokai_name=Find_dedicated_page(i_want_to_find)
-        result=exist_error(tagart_link,yokai_name)
+        result=exist_error(tagart_link,yokai_name,i_want_to_find)
         print(f"result:{result}")
         if not (result):
             #正常輸出
@@ -30,9 +33,9 @@ class cather(cog_extension):
         #回傳erro訊息
             await msg.edit(embed=result)
 #函式區
-def exist_error(link,yokai_name):#確認Find_dedicated_page函式有回傳東西，不為None
+def exist_error(link,yokai_name,you_want_to_find):#確認Find_dedicated_page函式有回傳東西，不為None
    if ((not link) or (not yokai_name)):
-      embed = discord.Embed(title="找不到搜尋對象")
+      embed = discord.Embed(title=f"找不到'{you_want_to_find}'")
       embed.add_field(name="欸若(error)啦", value="請檢查角色名稱再試一次", inline=True)
       return embed
    else:
