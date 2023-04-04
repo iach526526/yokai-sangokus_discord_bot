@@ -21,8 +21,6 @@ async def on_ready():
     print("Bot in ready")
     game = discord.Game('離恨樓裡生離恨💖測試')
     # discord.Status.<狀態>，可以是online,offline,idle,dnd,invisible
-    # try:
-    #     synced=await bot.tree.sync()
     for guild in bot.guilds:
         print(guild.name)
     await bot.change_presence(status=discord.Status.idle, activity=game)

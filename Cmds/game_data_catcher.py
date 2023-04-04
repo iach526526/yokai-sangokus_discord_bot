@@ -8,10 +8,9 @@ with open("setting.json", 'r', encoding='utf-8') as setting_value:  # setting.js
     sv_data = json.load(setting_value)
 class cather(cog_extension):
     @app_commands.command(name='尋找角色頁面' ,description="單純尋找角色頁網址，不查詳細資訊")
-    async def find(self,interaction:discord.Interaction, i_want_to_find:str):
+    async def find(self,interaction:discord.Interaction, i_want_to_find:str,公開訊息:bool=True):
         get_url,got_name=Find_dedicated_page(i_want_to_find)
-        await interaction.response.send_message(f"i got '{got_name}' from: {get_url}")
-
+        await interaction.response.send_message(f"i got '{got_name}' from: {get_url}",ephemeral=公開訊息)
     @app_commands.command(name='getinfo' ,description="尋找角色資訊(包含評分、種族等詳細資訊)")
     async def getinfo(self,interaction:discord.Interaction, i_want_to_find:str,invisible:bool=True):
         orginial_emb=discord.Embed(title="loading",description="努力加載中")
