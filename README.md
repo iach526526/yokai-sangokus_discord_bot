@@ -1,7 +1,7 @@
 # ABOUT THIS bot 
 ## 簡介
 **這是專為遊戲妖怪三國志竊國戰爭設計的Discord機器人，你可以對它下指令查詢攻略，如果你是伺服器的管理員可以點[此連結](https://discord.com/api/oauth2/authorize?client_id=1066170654916882483&permissions=8&scope=bot)把機器人邀進伺服器。**
-
+2024年更新:這款遊戲台服和日服都倒了，攻略網站也關了，機器人現在主要用來當我伺服器的門鈴
 
 ## 指令
 ### system
